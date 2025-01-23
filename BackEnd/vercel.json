@@ -1,0 +1,19 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "backend/index.js",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "backend/index.js"
+        }
+    ],
+    "env": {
+        "MY_API_KEY": "231577741538118",
+        "DB_URL": "mongodb+srv://mubaidyaqoob:0nkbLKWXitrO43mp@my-cluster.3grfe.mongodb.net/auth"
+    }
+}
