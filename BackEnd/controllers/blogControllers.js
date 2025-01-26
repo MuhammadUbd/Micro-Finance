@@ -1,50 +1,57 @@
 import { enums } from "../enums/enum.js";
-import { Blog } from "../model/blogModel.js";
+import { Loan } from "../model/blogModel.js";
 
 export const getBlog = async (req, res) => {
     try {
-        const allBlogs = await Blog.find();
-        if (!allBlogs) {
+        // console.log(req.user);
+        const allBlogs = await Loan.find({ user: req.user.id });
+        // console.log(allBlogs)
+        if (allBlogs === 0) {
             return res.status(404).json({ message: enums.BLOG_NOT_FOUND })
         }
         res.status(201).json({ message: enums.BLOG_FOUND, data: allBlogs })
     } catch (e) {
+        console.log(e)
         return res.status(400).json({ message: e.message })
     }
 }
 
+export const getAllBlogs = async (req, res) => {
+    try {
+        const allBlogs = await Loan.find();
+        // console.log(allBlogs)
+        if (allBlogs === 0) {
+            return res.status(404).json({ message: enums.BLOG_NOT_FOUND })
+        }
+        res.status(201).json({ message: enums.BLOG_FOUND, data: allBlogs })
+    } catch (e) {
+        // console.log(e)
+        return res.status(400).json({ message: e.message })
+    }
+}
 
 export const addBlog = async (req, res) => {
-    const { blog_Title, blog_Description, blog_Author, blog_Category } = req.body;
+    const { user_name, initial_Amount, time_Duration } = req.body;
     const blogData = req.body;
-    // console.log(thumbnail)
-    console.log(req?.body);
-    console.log(req.file)
-    const thumbnail = req.file.path
-    if (!req?.file) {
-        return res.status(400).json({ error: 'No file uploaded' });
-    }
-    // const thumbnail = req.file.secure_url || req.file.url;
+    const userId = req.user.id;
+    console.log(req.user);
     try {
-        if (!thumbnail) {
-            return res.status(500).json({ error: 'Failed to upload image to Cloudinary' });
-        }
         if (!blogData) {
             return res.status(404).json({ message: enums.BLOG_NOT_FOUND })
         }
-        // if (!blog_Title || !blog_Description || !blog_Author || !thumbnail || !blog_Category) {
-        //     return res.status(400).json({ message: enums.ALL_FIELDS_REQ })
-        // }
-        const blogData2 = {
-            blog_Title,
-            blog_Description,
-            blog_Author,
-            blog_Category,
-            blog_Image: thumbnail,
+        if (!user_name || !initial_Amount || !time_Duration) {
+            return res.status(400).json({ message: enums.ALL_FIELDS_REQ })
         }
-        const blog = await Blog.create(blogData2)
-        res.status(201).json({ message: enums.BLOG_CREATED, data: blog })
+        const loanData = {
+            user_name,
+            time_Duration,
+            initial_Amount,
+            user: userId,
+        }
+        const loan = await Loan.create(loanData)
+        res.status(201).json({ message: "Success", data: loan })
     } catch (e) {
+        console.log(e.message)
         return res.status(400).json({ message: e.message })
     }
 }
@@ -53,7 +60,7 @@ export const updateBlog = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
     try {
-        const updatedBlog = await Blog.findByIdAndUpdate(id, data)
+        const updatedBlog = await Loan.findByIdAndUpdate(id, data)
         if (!updateBlog) {
             return res.status(404).json({ message: enums.BLOG_NOT_FOUND })
         }
@@ -66,7 +73,7 @@ export const updateBlog = async (req, res) => {
 export const deleteBlog = async (req, res) => {
     const { id } = req.params;
     try {
-        const deleteBlog = await Blog.findByIdAndDelete(id)
+        const deleteBlog = await Loan.findByIdAndDelete(id)
         if (!deleteBlog) {
             return res.status(404).json({ message: enums.BLOG_NOT_FOUND })
         }

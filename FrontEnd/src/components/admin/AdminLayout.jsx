@@ -1,12 +1,13 @@
 import React from 'react'
-import HeaderComponent from './Header'
+// import HeaderComponent from '../FrontEnd/src/components/user/Header'
 import { Outlet } from 'react-router'
-import Footer from './Footer'
+import Footer from '../../components/Footer'
+import AdminHeader from './AdminHeader'
 
-const Layout = () => {
+const AdminLayout = () => {
     return (
         <div className="flex flex-col min-h-screen">
-            <HeaderComponent />
+            <AdminHeader />
             <main className="flex-grow container mx-auto p-4">
                 <div className=''>
                     <Outlet />
@@ -17,4 +18,4 @@ const Layout = () => {
     )
 }
 
-export default Layout
+export default AdminLayout

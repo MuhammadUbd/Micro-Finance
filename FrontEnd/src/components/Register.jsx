@@ -1,9 +1,10 @@
-import { postReq } from '../api/axios';
+// import { postReq } from '../../api/axios';
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from "react-hook-form"
 import { NavLink, useNavigate } from 'react-router';
 import { Button, Form, Input } from 'antd';
 import { toast } from 'react-hot-toast';
+import { postReq } from '../api/axios';
 
 
 export const RegisterComponent = () => {
@@ -18,16 +19,17 @@ export const RegisterComponent = () => {
     useEffect(() => {
         const item = localStorage.getItem("token");
         if (item) {
-            navigate('/dashboard')
+            navigate('/user-dashboard')
         }
     }, [])
     const onSubmit = async (data) => {
         try {
+            console.log(data)
             const response = await postReq('/auth/register', data);
             console.log('Response:', response);
-            navigate('/login')
+            // navigate('/login')
         } catch (e) {
-            console.log(e)
+            console.log(e.message)
         }
     };
 
@@ -70,7 +72,7 @@ export const RegisterComponent = () => {
                         </Form.Item>
                     </div>
                     <div className="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0">
-                        <Form.Item label="Role" className="flex flex-col space-y-2 w-full">
+                        {/* <Form.Item label="Role" className="flex flex-col space-y-2 w-full">
                             <Controller
                                 name="role"
                                 control={control}
@@ -79,14 +81,14 @@ export const RegisterComponent = () => {
                                     <Input placeholder="Enter your role" className="w-full" {...field} />
                                 )}
                             />
-                        </Form.Item>
-                        <Form.Item label="Username" className="flex flex-col space-y-2 w-full">
+                        </Form.Item> */}
+                        <Form.Item label="CNIC" className="flex flex-col space-y-2 w-full">
                             <Controller
-                                name="username"
+                                name="CNIC"
                                 control={control}
                                 defaultValue=""
                                 render={({ field }) => (
-                                    <Input placeholder="Enter your username" className="w-full" {...field} />
+                                    <Input placeholder="Enter your CNIC" className="w-full" {...field} />
                                 )}
                             />
                         </Form.Item>

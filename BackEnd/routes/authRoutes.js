@@ -12,3 +12,4 @@ authRouter.post('/logout', logoutController)
 authRouter.post('/reset-password/:token', resetPasswordController)
 
 authRouter.post('/forgot-password', forgotPasswordController)
+

@@ -8,6 +8,9 @@ blogRouter.get('/', getBlog)
 
 blogRouter.post('/add', upload.single("thumbnail"), addBlog)
 
+// blogRouter.get('')
+// blogRouter
+
 blogRouter.put('/update/:id', updateBlog)
 
 blogRouter.delete('/delete/:id', deleteBlog)

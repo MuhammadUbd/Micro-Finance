@@ -1,8 +1,11 @@
 import React from 'react'
-import DrawerComponent from './Drawer'
+import DrawerComponent from '../../components/Drawer'
 import { useForm } from 'react-hook-form';
+import { NavLink, useNavigate } from 'react-router';
+import { Dropdown, Menu } from 'antd';
 
 const HeaderComponent = () => {
+    const navigate = useNavigate()
     const { register, handleSubmit, watch } = useForm();
 
     const onSubmit = (data) => {
@@ -12,22 +15,36 @@ const HeaderComponent = () => {
             console.log("Uploaded File:", uploadedFile.name);
         }
     };
+    const handleLogout = () => {
+        navigate('/login')
+        localStorage.clear("token")
+    }
+    const menu = (
+        <Menu>
+            <Menu.Item key="1">
+                <NavLink to="/account">Account</NavLink>
+            </Menu.Item>
+            <Menu.Item key="2">
+                <NavLink to="/settings">Settings</NavLink>
+            </Menu.Item>
+        </Menu>
+    );
 
     return (
         <div className="header">
             <nav className="shadow-md p-4 flex items-center justify-between w-full">
                 {/* Logo Section */}
                 <div className="logo w-1/5">
-                    <h1 className="text-xl font-bold">Wix_Studio</h1>
+                    <h1 className="text-xl font-bold">Micro-Finance</h1>
                 </div>
 
                 {/* Navigation Links */}
                 <div className="routes w-3/5">
-                    <ul className="flex justify-center gap-6 ">
+                    <ul className="flex justify-center gap-6">
                         <li>
-                            <a href="#" className="hover:text-gray-300">
+                            <NavLink to="/user-dashboard" className="hover:text-gray-300">
                                 Home
-                            </a>
+                            </NavLink>
                         </li>
                         <li>
                             <a href="#" className="hover:text-gray-300">
@@ -39,15 +56,24 @@ const HeaderComponent = () => {
                                 Contact
                             </a>
                         </li>
+                        <li>
+                            <Dropdown overlay={menu} trigger={['click']} className="hover:text-gray-300">
+                                <a href="#">Education</a>
+                            </Dropdown>
+                        </li>
+                        <li>
+                            <a href="#" onClick={handleLogout} className="hover:text-gray-300">
+                                Logout
+                            </a>
+                        </li>
                     </ul>
                 </div>
 
                 {/* User Profile Upload */}
-                <div className="user-upload w-1/5 flex justify-end items-center">
+                {/* <div className="user-upload w-1/5 flex justify-end items-center">
                     <form onSubmit={handleSubmit(onSubmit)} className="flex items-center gap-4">
                         <label htmlFor="upload" className="cursor-pointer">
                             <div className="w-10 h-10 bg-gray-600 rounded-full shadow-md flex items-center justify-center">
-                                {/* Placeholder Icon */}
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -78,7 +104,7 @@ const HeaderComponent = () => {
                             Submit
                         </button>
                     </form>
-                </div>
+                </div> */}
             </nav>
         </div>
     );

@@ -6,7 +6,7 @@ import { blogReducer } from './features/blogReducer';
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['blogs'],
+    whitelist: ['blogs', 'users'],
 };
 
 export const persistedReducer = persistReducer(persistConfig, blogReducer);

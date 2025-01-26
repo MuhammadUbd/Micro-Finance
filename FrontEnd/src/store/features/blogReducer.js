@@ -6,14 +6,13 @@ const initialState = ({
     error: null,
 })
 
-// const uId = self.crypto.randomUUID()
-// console.log(uId)
 const blogSlice = createSlice({
     name: "blogs",
     initialState,
     reducers: {
         setBlog: (state, { payload }) => {
-            state.blogs = [...state.blogs, payload]
+            state.blogs = payload
+            // state.blogs.push(payload)
         },
         deleteBlog: (state, { payload }) => {
             state.blogs = state.blogs.filter((item) => item?._id !== payload)
@@ -24,6 +23,10 @@ const blogSlice = createSlice({
         setError: (state, { payload }) => {
             state.error = payload;
         },
+        // setUser: (state, { payload }) => {
+        //     state.blogs = payload
+        //     // state.blogs.push(payload)
+        // },
     }
 })
 

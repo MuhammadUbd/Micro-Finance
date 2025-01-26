@@ -4,9 +4,11 @@ import { postReq } from '../api/axios';
 import { NavLink, useNavigate } from 'react-router';
 import { Button, Form, Input, Radio } from 'antd';
 import { toast } from 'react-hot-toast';
+import { useDispatch } from 'react-redux';
 
 
 const LoginComponent = () => {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
     const [form] = Form.useForm();
     const [formLayout, setFormLayout] = useState('vertical');
@@ -18,17 +20,28 @@ const LoginComponent = () => {
     useEffect(() => {
         const item = localStorage.getItem("token");
         if (item) {
-            navigate('/dashboard')
+            navigate('/user-dashboard')
         }
     }, [])
     const onSubmit = async (data) => {
         try {
             const response = await postReq('/auth/login', data);
             console.log('Response:', response);
-            const { token } = response?.data;
+            const role = response?.data?.user?.role;
+            const token = response?.data?.token;
+            console.log(token)
             localStorage.setItem("token", token)
+            // if (role === "admin") {
+            //     navigate('/admin-dashboard')
+            // } else {
+            //     navigate('/dashboard')
+            // }
             if (token) {
-                navigate('/dashboard')
+                if (role === "admin") {
+                    navigate('/admin-dashboard')
+                } else {
+                    navigate('/user-dashboard')
+                }
             }
         } catch (e) {
             console.log(e)
@@ -37,7 +50,7 @@ const LoginComponent = () => {
 
     return (
         <>
-            <h1 className="text-center text-2xl font-bold py-5 bg-slate-300">Login Form</h1>
+            <h1 className="text-center text-2xl font-bold py-5">Login Form</h1>
             <div className="flex items-center justify-center min-h-screen bg-gray-100">
                 <Form
                     layout={formLayout}
@@ -74,6 +87,17 @@ const LoginComponent = () => {
                             />
                             {errors.password && <span className="text-red-500 text-sm">This field is required</span>}
                         </Form.Item>
+                        {/* <Form.Item label="CNIC" className="flex flex-col space-y-2">
+                            <Controller
+                                name="CNIC"
+                                control={control}
+                                defaultValue=""
+                                render={({ field }) => (
+                                    <Input.Password placeholder="Enter your CNIC" className="w-full" {...field} />
+                                )}
+                            />
+                            {errors.password && <span className="text-red-500 text-sm">This field is required</span>}
+                        </Form.Item> */}
                     </div>
                     <Form.Item className="flex flex-col space-y-4">
                         <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded" htmlType="submit">

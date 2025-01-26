@@ -1,8 +1,10 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { postReq } from "../api/axios"
+// import { postReq } from "../../api/axios"
 import { Form, Input, Button, Typography } from "antd";
-import { useForm, Controller } from "react-hook-form";;
+import { useForm, Controller } from "react-hook-form";
+import { postReq } from "../api/axios";
+;
 // import toast from "react-hot-toast";
 
 const ResetForm = () => {

@@ -12,7 +12,11 @@ const app = express()
 dotenv.config()
 
 const PORT = process.env.PORT || 8080
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173',  // Your frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],  // Allow Authorization header
+}));
 app.use(express.json())
 
 app.get('/', (req,res) => {

@@ -4,86 +4,65 @@ import { Form, Input, Button, Select } from 'antd';
 import { postReq } from '../api/axios';
 import { useDispatch, useSelector } from "react-redux"
 import { setBlog, setError } from '../store/features/blogReducer';
+import { useNavigate } from 'react-router';
 // import { setBlog, setError } from '../store/features/blogReducer';
 
 const { TextArea } = Input;
 
 const BlogForm = () => {
+  const navigate = useNavigate()
   const { handleSubmit, control } = useForm();
   const dispatch = useDispatch()
-  // const [isSubmitted, setIsSubmitted] = useState(false)
 
   const onSubmit = async (data) => {
+    console.log(data)
     // e.preventDefault()
     const formData = new FormData();
-    formData.append('blog_Title', data.blog_Title)
-    formData.append('blog_Description', data.blog_Description)
-    formData.append('blog_Author', data.blog_Author)
-    formData.append('blog_Category', data.blog_Category)
-    formData.append("thumbnail", data.blog_Image)
-    console.log('Form Data:', data);
+    formData.append('user_name', data.name)
+    formData.append('initial_Amount', data.initial_Amount)
+    formData.append('time_Duration', data.time_Duration)
+
     try {
-      const response = await postReq('/dashboard/blogs/add', formData, true)
+      const response = await postReq('/user-dashboard/blogs/add', formData)
       const dispatchData = response?.data?.data;
       if (response) {
-        dispatch(setBlog(dispatchData))
+        navigate('/register')
+        // dispatch(setBlog(dispatchData))
       }
     } catch (e) {
+      console.log(e.message)
       dispatch(setError(e.message))
     }
   };
 
-  // useEffect(() => {
-  //   if (isSubmitted) {
-  //     // This code will run after form submission (because isSubmitted state is updated)
-  //     alert('Blog added successfully!');
-  //     setIsSubmitted(false); // Reset the submitted state
-  //   }
-  // }, [isSubmitted]);
 
   return (
     <div className="bg-white p-6 rounded-md shadow-lg w-full max-w-3xl mx-auto">
-      <h2 className="text-xl font-bold mb-4">Create a New Blog</h2>
+      <h2 className="text-xl font-bold mb-4">Loan Form</h2>
       <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
         {/* Blog Title */}
-        <Form.Item label="Title">
+        <Form.Item label="Name">
           <Controller
-            name="blog_Title"
+            name="name"
             control={control}
             // rules={{ required: 'Please enter the blog title' }}
             render={({ field, fieldState: { error } }) => (
               <>
-                <Input {...field} placeholder="Enter blog title" />
+                <Input {...field} placeholder="Enter Name" />
                 {error && <p className="text-red-500 text-sm">{error.message}</p>}
               </>
             )}
           />
         </Form.Item>
 
-        {/* Description */}
-        <Form.Item label="Description">
+        <Form.Item label="Initial-Amount">
           <Controller
-            name="blog_Description"
+            name="initial_Amount"
             control={control}
-            // rules={{ required: 'Please enter the description' }}
+            // rules={{ required: 'Please enter the blog title' }}
             render={({ field, fieldState: { error } }) => (
               <>
-                <TextArea {...field} rows={4} placeholder="Enter blog description" />
-                {error && <p className="text-red-500 text-sm">{error.message}</p>}
-              </>
-            )}
-          />
-        </Form.Item>
-
-        {/* Author */}
-        <Form.Item label="Author">
-          <Controller
-            name="blog_Author"
-            control={control}
-            // rules={{ required: 'Please enter the author name' }}
-            render={({ field, fieldState: { error } }) => (
-              <>
-                <Input {...field} placeholder="Enter author name" />
+                <Input {...field} placeholder="Enter Initial-Amount" />
                 {error && <p className="text-red-500 text-sm">{error.message}</p>}
               </>
             )}
@@ -91,21 +70,21 @@ const BlogForm = () => {
         </Form.Item>
 
         {/* Category */}
-        <Form.Item label="Category">
+        <Form.Item label="Duration">
           <Controller
-            name="blog_Category"
+            name="time-Duration"
             control={control}
             // rules={{ required: 'Please select a category' }}
             render={({ field, fieldState: { error } }) => (
               <>
                 <Select
                   {...field}
-                  placeholder="Select a category"
+                  placeholder="Select Time Duration"
                   onChange={(value) => field.onChange(value)}
                 >
-                  <Select.Option value="technology">Technology</Select.Option>
-                  <Select.Option value="lifestyle">Lifestyle</Select.Option>
-                  <Select.Option value="finance">Finance</Select.Option>
+                  <Select.Option value="1">1</Select.Option>
+                  <Select.Option value="2">2</Select.Option>
+                  <Select.Option value="3">3</Select.Option>
                 </Select>
                 {error && <p className="text-red-500 text-sm">{error.message}</p>}
               </>
@@ -114,7 +93,7 @@ const BlogForm = () => {
         </Form.Item>
 
         {/* Image */}
-        <Form.Item label="Image">
+        {/* <Form.Item label="Image">
           <Controller
             name="blog_Image"
             control={control}
@@ -133,7 +112,7 @@ const BlogForm = () => {
               />
             )}
           />
-        </Form.Item>
+        </Form.Item> */}
 
 
         {/* Submit Button */}

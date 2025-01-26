@@ -9,8 +9,8 @@ dotenv.config()
 
 const registerController = async (req, res) => {
     try {
-        const { username, email, password, role } = req.body
-        if (!username || !email || !password || !role) {
+        const { CNIC, email, password } = req.body
+        if (!CNIC || !email || !password) {
             return res.status(400).json({ message: enums.ALL_FIELDS_REQ })
         }
         const user = await User.findOne({ email })
@@ -19,10 +19,10 @@ const registerController = async (req, res) => {
         }
         const hashPassword = await bcrypt.hash(password, 10)
         const newUser = await User.create({
-            username,
+            // role,
             email,
             password: hashPassword,
-            role,
+            CNIC,
         })
         res.status(201).json({ message: enums.USER_CREATED, newUser })
     } catch (e) {
@@ -30,10 +30,11 @@ const registerController = async (req, res) => {
     }
 }
 
+
 const loginController = async (req, res) => {
     try {
         const { email, password } = req.body;
-        const jwtMessage = process.env.JWT_TOKEN;
+        const jwtSecret = process.env.JWT_TOKEN;
 
         if (!email || !password) {
             return res.status(400).json({ message: enums.ALL_FIELDS_REQ });
@@ -41,21 +42,29 @@ const loginController = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: enums.USER_NOT_FOUND });
+            return res.status(404).json({ message: enums.USER_NOT_FOUND }); // Not Found
         }
 
         const validatePassword = await bcrypt.compare(password, user.password);
         if (!validatePassword) {
-            return res.status(400).json({ message: enums.INVALID_CREDENTIALS });
+            return res.status(401).json({ message: enums.INVALID_CREDENTIALS }); // Unauthorized
         }
 
-        const token = jwt.sign({ id: user._id }, jwtMessage);
-        return res.status(200).json({ message: enums.USER_LOGGED_IN, token, user });
+        const token = jwt.sign({ id: user._id, role: user.role }, jwtSecret, { expiresIn: "24h" });
+
+        // Avoid sending sensitive fields
+        const { password: _, resetPasswordToken, resetPasswordExpires, ...userWithoutSensitiveData } = user.toObject();
+
+        return res.status(200).json({
+            message: enums.USER_LOGGED_IN,
+            token,
+            user: userWithoutSensitiveData,
+        });
     } catch (error) {
-        return res.status(400).json({ message: e.message })
-        // return res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({ message: "Internal server error", error: error.message });
     }
-}
+};
+
 
 const logoutController = async (req, res) => {
     try {
@@ -69,14 +78,11 @@ const forgotPasswordController = async (req, res) => {
     // const token = tokenGenerator()
     const { email } = req.body;
     try {
-        // this is your mistake await ni tha to usy user ni mila jb user
-        // ni mila to email ni mili
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: enums.USER_NOT_FOUND })
         }
-        // console.log(user)
-        // // else ni lgta 
+
         const resetToken = crypto.randomBytes(20).toString("hex");
         const resetTokenExpires = Date.now() + 1 * 60 * 60 * 100;
 
